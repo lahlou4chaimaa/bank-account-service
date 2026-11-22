@@ -36,4 +36,18 @@ public class AccountServiceImpl implements AccountService {
 
         return accountMapper.fromBankAccount(savedBankAccount);
     }
+    @Override
+    public BankAccountResponseDTO updateAccount(String id, BankAccountRequestDTO bankAccountDTO) {
+        BankAccount bankAccount = BankAccount.builder()
+                .id(id)
+                .createdAt(new Date())
+                .balance(bankAccountDTO.getBalance())
+                .type(bankAccountDTO.getType())
+                .currency(bankAccountDTO.getCurrency())
+                .build();
+
+        BankAccount savedBankAccount = bankAccountRepository.save(bankAccount);
+
+        return accountMapper.fromBankAccount(savedBankAccount);
+    }
 }
