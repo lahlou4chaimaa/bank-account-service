@@ -6,6 +6,8 @@ import org.sid.bank_account_service.entities.BankAccount;
 import org.sid.bank_account_service.mappers.AccountMapper;
 import org.sid.bank_account_service.repositories.BankAccountRepository;
 import org.sid.bank_account_service.service.AccountService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -16,8 +18,11 @@ import java.util.UUID;
 @RequestMapping("/api")
 
 public class AccountRestController {
+    @Autowired
     private BankAccountRepository bankAccountRepository;
+    @Autowired
     private AccountService accountService;
+    @Autowired
     private AccountMapper accountMapper;
 
     public AccountRestController(BankAccountRepository bankAccountRepository)
@@ -27,21 +32,32 @@ public class AccountRestController {
 
     }
     @GetMapping("/bankAccounts")
-    public List<BankAccount> bankAccounts()
-    {
+
+public List<BankAccount>bankAccounts() {
         return bankAccountRepository.findAll();
     }
+
+
+
     @GetMapping("/bankAccounts/{id}")
-    public BankAccount bankAccounts(@PathVariable String id) {
+    public BankAccount bankAccounts(@PathVariable String id)
+    {
 
         return bankAccountRepository.findById(id)
                 .orElseThrow(()->new RuntimeException(String.format("Account %s not found", id)));
 
-        }
-        @PostMapping("/bankAccounts")
-        public BankAccountResponseDTO save(@RequestBody BankAccountRequestDTO bankAccountDTO){
-        return accountService.addAccount(bankAccountDTO);
     }
+
+
+    @PostMapping("/bankAccounts")
+        public BankAccountResponseDTO save(@RequestBody BankAccountRequestDTO requestDTO)
+        {
+            return accountService.addAccount(requestDTO);
+        }
+
+
+
+
     @PutMapping("/bankAccounts/{id}")
 
     public BankAccount update(@PathVariable String id ,@RequestBody BankAccount bankAccount){
@@ -52,6 +68,9 @@ public class AccountRestController {
         if (bankAccount.getCreatedAt()!=null)  account.setCreatedAt(new Date());
         return bankAccountRepository.save(account);
     }
+
+
+
 
     @DeleteMapping("/bankAccounts/{id}")
     public void deleteAccount(@PathVariable String id) {
